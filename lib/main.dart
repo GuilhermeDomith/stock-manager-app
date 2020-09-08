@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:stock_manager_app/config.dart';
 
-import 'first_page.dart';
+import 'pages/home_page.dart';
 
-void main() {
+Future<void> main() async {
+  await DotEnv().load('.env');
   runApp(MyApp());
 }
 
@@ -13,13 +16,12 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
-        //primarySwatch: Colors.lightGreen,
-        primaryColorLight: Colors.purple[800],
-        primaryColorDark: Colors.red[800],
-        primaryColor: Colors.lightGreen[800],
-        //visualDensity: VisualDensity.adaptivePlatformDensity,
+        primarySwatch: Colors.yellow,
+        primaryColor: Color(0xFFDD2C00),
+        primaryColorLight: Color(0xFFff6434),
+        primaryColorDark: Color(0xFFA30000),
       ),
-      home: FirstPage(),
+      home: HomePage(),
     );
   }
 }
