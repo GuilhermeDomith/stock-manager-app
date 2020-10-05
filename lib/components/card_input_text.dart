@@ -1,18 +1,124 @@
 
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
+import 'package:intl/intl.dart';
+import 'package:stock_manager_app/components/button.dart';
+import 'package:stock_manager_app/components/text.dart';
+import 'package:stock_manager_app/components/text_field.dart';
+import 'package:stock_manager_app/utils/datetime_converter.dart';
+
 
 class CardInputText extends StatelessWidget{
+
   CardInputText({
     this.label,
+    this.description,
     this.onComplete,
     this.controller,
     Key key
   }) : super(key: key);
 
   final String label;
+  final String description;
   final Function onComplete;
   final TextEditingController controller;
+
+  @override
+  Widget build(BuildContext context) {
+    return CardInput(
+        label: this.label,
+        description: this.description,
+        onComplete: this.onComplete,
+        component: CustomTextField(
+          controller: this.controller,
+          color: Colors.blue,
+        )
+    );
+  }
+}
+
+class DatePickerController {
+
+  DatePickerController() {
+    this.selectedDate = DateTime.now();
+  }
+
+  DateTime selectedDate;
+
+  void dispose(){ }
+
+}
+
+
+class CardInputDate extends StatelessWidget{
+
+  static final DateFormat dtFormat = new DateFormat('dd/MM/y');
+
+
+  CardInputDate({
+    this.label,
+    this.description,
+    this.onComplete,
+    this.controller,
+    Key key
+  }) : super(key: key);
+
+  final String label;
+  final String description;
+  final Function onComplete;
+  final DatePickerController controller;
+
+  final TextEditingController _textFieldCtrl = TextEditingController();
+
+  Future<void> _selectDate(BuildContext context) async {
+
+    final DateTime picked = await showDatePicker(
+        context: context,
+        initialDate: controller.selectedDate,
+        firstDate: DateTime(2015, 8),
+        lastDate: DateTime(2101));
+
+    if (picked != null && picked != controller.selectedDate) {
+      controller.selectedDate = picked;
+      _textFieldCtrl.text = dtFormat.format(controller.selectedDate);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+
+    _textFieldCtrl.text = dtFormat.format(controller.selectedDate);
+
+    return CardInput(
+        label: this.label,
+        description: this.description,
+        onComplete: this.onComplete,
+        component: CustomTextField(
+          controller: this._textFieldCtrl,
+          color: Colors.blue,
+          onTap: () => _selectDate(context),
+        )
+    );
+  }
+}
+
+
+class CardInput extends StatelessWidget{
+  CardInput({
+    this.label,
+    this.description,
+    this.onComplete,
+    this.component,
+    Key key
+  }) : super(key: key);
+
+  final String label;
+  final String description;
+  final Function onComplete;
+  final Widget component;
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +139,14 @@ class CardInputText extends StatelessWidget{
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
 
-                Container(
-                  height: height * 0.2,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      this.label,
-                      textAlign: TextAlign.left,
-                      style: TextStyle(
-                        color: Colors.grey[700],
-                        fontWeight: FontWeight.bold,
-                        fontSize: 25,
-                      ),
-                    ),
-                  ),
+                Padding(
+                    padding: EdgeInsets.symmetric(vertical: 5),
+                  child: this._title()
+                ),
+
+                Padding(
+                    padding: EdgeInsets.symmetric(vertical: (this.description != null)? 15 : 0),
+                    child: this._description()
                 ),
 
                 Divider(),
@@ -54,25 +154,7 @@ class CardInputText extends StatelessWidget{
                 Expanded(
                   child: Align(
                       alignment: Alignment.center,
-                      child: TextField(
-                        controller: this.controller,
-                        decoration: InputDecoration(
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                          ),
-                          border: UnderlineInputBorder(
-                            borderSide: BorderSide(color: Colors.blue),
-                          ),
-                        ),
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontWeight: FontWeight.normal,
-                          fontSize: 25,
-                        ),
-                      )
+                      child: this.component
                   ),
                 ),
 
@@ -80,19 +162,11 @@ class CardInputText extends StatelessWidget{
                   buttonMinWidth: width,
                   alignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    OutlineButton(
-                      textColor: Colors.blue,
-                      child: Text('Confirmar' ),
-                      shape: RoundedRectangleBorder(
-                          side: BorderSide(
-                              color: Colors.blue,
-                              width: 1,
-                              style: BorderStyle.solid
-                          ),
-                          borderRadius: BorderRadius.circular(3)
-                      ),
-                      onPressed: () => this.onComplete(),
-                    ),
+                    CustomCleanButton(
+                      label: 'Confirmar',
+                      color: Colors.blue,
+                      onClick: () => this.onComplete(),
+                    )
                   ],
                 )
 
@@ -104,4 +178,32 @@ class CardInputText extends StatelessWidget{
     );
   }
 
+  Widget _title() {
+    return Align(
+      alignment: Alignment.center,
+      child: CustomText(
+        label: this.label,
+        fontWeight: FontWeight.bold,
+      ),
+    );
+  }
+
+  Widget _description() {
+    if(this.description != null)
+      return Align(
+        alignment: Alignment.center,
+        child: CustomText(
+          label: this.description,
+          fontWeight: FontWeight.normal,
+          fontSize: 18,
+        ),
+      );
+    else
+      return null;
+  }
+
 }
+
+
+
+

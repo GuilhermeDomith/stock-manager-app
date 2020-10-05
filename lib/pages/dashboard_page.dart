@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:stock_manager_app/components/button.dart';
 
 import 'add_product_page.dart';
 import 'home_page.dart';
@@ -33,19 +34,25 @@ class DashboardPage extends StatelessWidget{
             width: MediaQuery.of(scaffoldContext).size.width,
             child: Padding(
               padding: EdgeInsets.all(8),
-              child: RaisedButton(
-                child: Text('Novo Item'),
-                onPressed: () => {
-                  Navigator.push(
-                      scaffoldContext,
-                      MaterialPageRoute(builder: (context) => AddProductPage(scaffoldContext)))
-                },
+              child: CustomCleanButton(
+                label: 'Novo Item',
+                color: Theme.of(scaffoldContext).primaryColorDark,
+                onClick: () => this.onClickAddProduct(scaffoldContext),
               ),
             ),
           ),
         ],
       ),
     );
+  }
+
+
+  void onClickAddProduct(BuildContext scaffoldContext){
+      Navigator.push(
+          scaffoldContext,
+          MaterialPageRoute(builder:
+              (context) => AddProductPage(scaffoldContext))
+      );
   }
 
 }

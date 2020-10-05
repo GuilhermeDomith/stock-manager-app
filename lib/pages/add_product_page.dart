@@ -91,6 +91,7 @@ class _AddProductPageState extends State<AddProductPage> with SingleTickerProvid
         description: description,
         quantity: double.parse(quantity),
         dailySpentMean: double.parse(dailySpent),
+        //lastUpdate: DateTime.now()
     );
 
     var success = await _productBloc.addProduct(product);

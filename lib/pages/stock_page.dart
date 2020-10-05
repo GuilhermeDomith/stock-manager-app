@@ -6,6 +6,7 @@ import 'package:stock_manager_app/components/card_product_alert.dart';
 import 'package:stock_manager_app/components/connection.dart';
 import 'package:stock_manager_app/models/product.dart';
 import 'package:stock_manager_app/pages/home_page.dart';
+import 'package:stock_manager_app/pages/replenishing_page.dart';
 
 class StockPage extends StatefulWidget{
 
@@ -59,26 +60,29 @@ class _StockPageState extends State<StockPage>{
 
     return Scaffold(
       appBar: AppBar(title: Text(this.title)),
-      body: _body(),
+      body: Builder(
+        builder: (context) =>
+            _body(context)
+      ),
     );
   }
 
-  _body() {
+  _body(BuildContext scaffoldContext) {
     return Padding(
       padding: EdgeInsets.all(8),
       child: RefreshIndicator(
         onRefresh: this.refreshScreen,
         child: Column(
           children: <Widget>[
-            _listViewProductsAlert(),
-            _listViewProductsStock(),
+            _listViewProductsAlert(scaffoldContext),
+            _listViewProductsStock(scaffoldContext),
           ],
         ),
       ),
     );
   }
 
-  _listViewProductsAlert() {
+  _listViewProductsAlert(BuildContext scaffoldContext) {
     return StreamBuilder(
         stream: _productBloc1.controller.stream,
         builder: (BuildContext context, AsyncSnapshot<ProductList> snapshot) =>
@@ -109,7 +113,7 @@ class _StockPageState extends State<StockPage>{
     );
   }
 
-  _listViewProductsStock() {
+  _listViewProductsStock(BuildContext scaffoldContext) {
     return StreamBuilder<ProductList>(
       stream: _productBloc1.controller.stream,
       builder: ( _, AsyncSnapshot<ProductList> snapshot) =>
@@ -126,12 +130,13 @@ class _StockPageState extends State<StockPage>{
                             CardProduct(
                               //height: 120,
                               product: snapshot.data.products[index],
-                              onDeleteClick: () =>
-                                  showAlertDialog(
-                                      context,
-                                      snapshot.data.products[index],
-                                      () => _deleteProduct(snapshot.data.products[index])
-                                  ),
+                              onEditClick: () => this.onClickEditProduct(
+                                  scaffoldContext,
+                                  snapshot.data.products[index]
+                              ),
+                              onDeleteClick: () => this.onClickDeleteProduct(
+                                snapshot.data.products[index]
+                              ),
                             ),
 
                       )
@@ -160,7 +165,21 @@ class _StockPageState extends State<StockPage>{
         content: Text(message)));
   }
 
-  showAlertDialog(BuildContext context, Product product, Function onConfirm) {
+  void onClickEditProduct(BuildContext scaffoldContext, Product product) {
+    Navigator.push(
+        scaffoldContext,
+        MaterialPageRoute(builder:
+            (context) => ReplenishingPage(scaffoldContext, product))
+    );
+  }
+
+  void onClickDeleteProduct(Product product) {
+    showAlertDialog(
+        context, product, () => _deleteProduct(product)
+    );
+  }
+
+  void showAlertDialog(BuildContext context, Product product, Function onConfirm) {
 
     // set up the button
     Widget okButton = FlatButton(

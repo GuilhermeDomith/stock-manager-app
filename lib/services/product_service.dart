@@ -1,9 +1,7 @@
 
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:stock_manager_app/models/product.dart';
 import 'package:stock_manager_app/services/service.dart';
 
