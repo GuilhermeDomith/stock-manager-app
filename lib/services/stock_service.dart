@@ -9,17 +9,14 @@ class StockService extends CustomService{
   Future<String> replenishingProduct(Replenishing replenishing) async {
     var data = replenishing.toJson();
     var id = replenishing.productId;
-    String message = null;
 
-    try{
+    try {
       var response = await api.post('/stock/products/$id', data: data);
-      message = response.data['status'];
-    }on DioError catch (e) {
-      if(e.response.data.containsKey('status'))
-        message = e.response.data['status'];
+      return response.data['message'];
+    } on DioError catch (e) {
+      return e.response.data['message'];
     }
 
-    return message;
   }
 
 }

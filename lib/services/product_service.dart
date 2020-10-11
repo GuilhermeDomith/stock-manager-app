@@ -11,8 +11,8 @@ class ProductService extends CustomService{
   Future<ProductList> listProducts() async {
     try {
       Response response = await api.get('/products');
-
-      return ProductList.fromJson(response.data);
+      var data = response.data;
+      return ProductList.fromJson(data['items']);
     } catch(e){
       throw SocketException(e.toString());
     }
@@ -21,8 +21,8 @@ class ProductService extends CustomService{
   Future<ProductList> listProductsInAlert() async {
     try {
       Response response = await api.get('/products');
-
-      return ProductList.fromJson(response.data);
+      var data = response.data;
+      return ProductList.fromJson(data['items']);
     } catch(e){
       throw SocketException(e.toString());
     }
@@ -31,17 +31,17 @@ class ProductService extends CustomService{
   Future<bool> addProduct(Product product) async {
     var data = product.toJson();
     Response response = await api.post('/products', data: data);
-    return true;
+    return response.data['success'];
   }
 
   Future<bool> deleteProduct(int id) async {
-    Response response = await api.delete('/products/${id}');
-    return true;
+    Response response = await api.delete('/products/$id');
+    return response.data['success'];
   }
 
   Future<bool> getProduct(int id) async {
-    Response response = await api.get('/products/${id}');
-    return true;
+    Response response = await api.get('/products/$id');
+    return response.data['success'];
   }
 
 }
