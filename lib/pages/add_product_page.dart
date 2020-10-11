@@ -23,6 +23,7 @@ class _AddProductPageState extends State<AddProductPage> with SingleTickerProvid
   TextEditingController descriptionCtrl;
   TextEditingController quantityCtrl;
   TextEditingController dailySpentCtrl;
+  DatePickerController entryDateCtrl;
 
   @override
   void initState() {
@@ -32,9 +33,10 @@ class _AddProductPageState extends State<AddProductPage> with SingleTickerProvid
 
     descriptionCtrl = TextEditingController();
     quantityCtrl = TextEditingController();
-    dailySpentCtrl = TextEditingController();
+    dailySpentCtrl = TextEditingController(text: '100');
+    entryDateCtrl = DatePickerController();
 
-    _tabController = new TabController(vsync: this, length: 3);
+    _tabController = new TabController(vsync: this, length: 4);
   }
 
   @override
@@ -43,6 +45,7 @@ class _AddProductPageState extends State<AddProductPage> with SingleTickerProvid
     descriptionCtrl.dispose();
     quantityCtrl.dispose();
     dailySpentCtrl.dispose();
+    entryDateCtrl.dispose();
     super.dispose();
   }
 
@@ -69,10 +72,18 @@ class _AddProductPageState extends State<AddProductPage> with SingleTickerProvid
                   onComplete: () => _tabController.animateTo(2),
               ),
 
+              CardInputDate(
+                label: 'Data de Entrada',
+                description: 'Em que data esta quantidade entrou no estoque?',
+                controller: entryDateCtrl,
+                onComplete: () => _tabController.animateTo(3),
+              ),
+
               CardInputText(
-                label: 'Gasto Semanal (Média)',
+                label: 'Gasto Semanal',
+                description: 'Qual o gasto médio deste produto por semana?',
                 controller: dailySpentCtrl,
-                  onComplete: () => saveNewProduct(context),
+                onComplete: () => saveNewProduct(context),
               ),
 
             ],
@@ -81,18 +92,50 @@ class _AddProductPageState extends State<AddProductPage> with SingleTickerProvid
     );
   }
 
+  Product validate() {
+    if(descriptionCtrl.text.isEmpty) {
+      showAlertDialog( context, "Informação Inválida",
+          "O nome do produto deve ser fornecido.",
+          () => _tabController.animateTo(0)
+      );
+      return null;
+    }
+
+    var quantity;
+    try {
+      quantity = double.parse(quantityCtrl.text);
+    }  on FormatException catch (e) {
+      showAlertDialog( context, "Informação Inválida",
+          "A quantidade fornecida não é um valor válido.",
+          () => _tabController.animateTo(1)
+      );
+      return null;
+    }
+
+    var dailySpent;
+    try {
+      dailySpent = double.parse(dailySpentCtrl.text);
+    } on FormatException catch (e){
+      showAlertDialog( context, "Informação Inválida",
+          "O gasto medio fornecido não é um valor válido.",
+          () => _tabController.animateTo(3)
+      );
+      return null;
+    }
+
+    return Product(
+        description: descriptionCtrl.text,
+        quantity: quantity,
+        dailySpentMean: dailySpent,
+        lastUpdate: entryDateCtrl.selectedDate
+    );
+  }
+
   saveNewProduct(BuildContext context) async {
 
-    var description = descriptionCtrl.text;
-    var dailySpent = dailySpentCtrl.text;
-    var quantity = quantityCtrl.text;
-
-    var product = Product(
-        description: description,
-        quantity: double.parse(quantity),
-        dailySpentMean: double.parse(dailySpent),
-        //lastUpdate: DateTime.now()
-    );
+    var product = this.validate();
+    if(product == null)
+      return;
 
     var success = await _productBloc.addProduct(product);
 
@@ -100,6 +143,9 @@ class _AddProductPageState extends State<AddProductPage> with SingleTickerProvid
 
     if(success) {
       Navigator.pop(context);
+      Scaffold.of(widget.scaffoldContext).showSnackBar(
+          SnackBar(content: Text('Item adicionado.'))
+      );
     } else {
       Navigator.pop(context);
       Scaffold.of(widget.scaffoldContext).showSnackBar(
@@ -108,6 +154,34 @@ class _AddProductPageState extends State<AddProductPage> with SingleTickerProvid
     }
 
     //_tabController.animateTo(3);
+  }
+
+  void showAlertDialog(BuildContext context, title, message, Function onConfirm) {
+
+    Widget okButton = FlatButton(
+        child: Text("OK"),
+        onPressed: () {
+          Navigator.of(context).pop();
+          if(onConfirm != null)
+            onConfirm();
+        }
+    );
+
+    AlertDialog alert = AlertDialog(
+      title: Text(title),
+      content: Text(message),
+      actions: [
+        okButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
 
