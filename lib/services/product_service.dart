@@ -36,6 +36,7 @@ class ProductService extends CustomService{
 
   Future<bool> deleteProduct(int id) async {
     Response response = await api.delete('/products/$id');
+    print(response.data['success']);
     return response.data['success'];
   }
 

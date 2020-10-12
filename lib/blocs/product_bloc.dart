@@ -16,7 +16,7 @@ class ProductBloc {
       if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
         return Future.value(true);
       }
-    } on SocketException catch (e){
+    } on SocketException {
       return Future.value(false);
     }
     return Future.value(false);

@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:stock_manager_app/blocs/stock_bloc.dart';
+import 'package:stock_manager_app/components/alerts.dart';
 import 'package:stock_manager_app/components/card_input_text.dart';
 import 'package:stock_manager_app/models/product.dart';
 import 'package:stock_manager_app/models/replenishing.dart';
@@ -117,19 +118,11 @@ class _ReplenishingPageState extends State<ReplenishingPage> with SingleTickerPr
 
     print(message);
 
-    if(message == null) {
+    if(message == null)
       message = 'Não foi possível realizar a reposição.';
-    }
 
     Navigator.pop(context);
-    Scaffold.of(widget.scaffoldContext)
-        .showSnackBar(
-          SnackBar(
-            content: Text(message),
-            duration: Duration(seconds: 15),
-          ),
-    );
-
+    showSnackBar(widget.scaffoldContext, message, 10);
   }
 }
 

@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:stock_manager_app/components/button.dart';
 import 'package:stock_manager_app/components/text.dart';
 import 'package:stock_manager_app/components/text_field.dart';
-import 'package:stock_manager_app/utils/datetime_converter.dart';
 
 
 class CardInputText extends StatelessWidget{

@@ -2,6 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:stock_manager_app/blocs/product_bloc.dart';
+import 'package:stock_manager_app/components/alerts.dart';
 import 'package:stock_manager_app/components/card_input_text.dart';
 import 'package:stock_manager_app/models/product.dart';
 
@@ -93,40 +94,34 @@ class _AddProductPageState extends State<AddProductPage> with SingleTickerProvid
   }
 
   Product validate() {
-    if(descriptionCtrl.text.isEmpty) {
-      showAlertDialog( context, "Informação Inválida",
-          "O nome do produto deve ser fornecido.",
-          () => _tabController.animateTo(0)
-      );
+
+    var dialog = (msg, toTab) {
+      okDialog( context, "Informação Inválida", msg,
+          onClose: () => _tabController.animateTo(toTab));
       return null;
-    }
+    };
+
+    if(descriptionCtrl.text.isEmpty)
+      return dialog("O nome do produto deve ser fornecido.", 0);
 
     var quantity;
     try {
       quantity = double.parse(quantityCtrl.text);
-    }  on FormatException catch (e) {
-      showAlertDialog( context, "Informação Inválida",
-          "A quantidade fornecida não é um valor válido.",
-          () => _tabController.animateTo(1)
-      );
-      return null;
+    }  on FormatException {
+      return dialog("A quantidade fornecida não é um valor válido.", 1);
     }
 
-    var dailySpent;
+    var weeklySpent;
     try {
-      dailySpent = double.parse(dailySpentCtrl.text);
-    } on FormatException catch (e){
-      showAlertDialog( context, "Informação Inválida",
-          "O gasto medio fornecido não é um valor válido.",
-          () => _tabController.animateTo(3)
-      );
-      return null;
+      weeklySpent = double.parse(dailySpentCtrl.text);
+    } on FormatException {
+      return dialog("O gasto medio fornecido não é um valor válido.", 3);
     }
 
     return Product(
         description: descriptionCtrl.text,
         quantity: quantity,
-        dailySpentMean: dailySpent,
+        dailySpentMean: weeklySpent / 7,
         lastUpdate: entryDateCtrl.selectedDate
     );
   }
@@ -154,34 +149,6 @@ class _AddProductPageState extends State<AddProductPage> with SingleTickerProvid
     }
 
     //_tabController.animateTo(3);
-  }
-
-  void showAlertDialog(BuildContext context, title, message, Function onConfirm) {
-
-    Widget okButton = FlatButton(
-        child: Text("OK"),
-        onPressed: () {
-          Navigator.of(context).pop();
-          if(onConfirm != null)
-            onConfirm();
-        }
-    );
-
-    AlertDialog alert = AlertDialog(
-      title: Text(title),
-      content: Text(message),
-      actions: [
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
   }
 }
 

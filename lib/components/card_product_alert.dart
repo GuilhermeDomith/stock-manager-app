@@ -60,7 +60,7 @@ class CardProductAlert extends StatelessWidget{
             ),
 
             LabelAndValue(label:'Código:', value: product.id.toString()),
-            LabelAndValue(label:'Gasto Semanal:', value: NumberFormat('0').format(product.dailySpentMean) + ' Un.'),
+            LabelAndValue(label:'Gasto Semanal:', value: NumberFormat('0').format(product.weeklySpentMean) + ' Un.'),
             LabelAndValue(label:'Última atualização:', value: DateFormat('dd/MM/yyyy').format(product.lastUpdate)),
 
           ],
@@ -151,7 +151,7 @@ class CardProduct extends StatelessWidget{
             light: false ),
         LabelAndValue(
             label:'Gasto Semanal:',
-            value: NumberFormat('0').format(product.dailySpentMean) + ' Un.',
+            value: NumberFormat('0').format(product.weeklySpentMean) + ' Un.',
             light: false ),
         LabelAndValue(
             label:'Última atualização:',

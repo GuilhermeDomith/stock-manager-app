@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:stock_manager_app/blocs/product_bloc.dart';
+import 'package:stock_manager_app/components/alerts.dart';
 import 'package:stock_manager_app/components/card_product_alert.dart';
 import 'package:stock_manager_app/components/connection.dart';
 import 'package:stock_manager_app/models/product.dart';
@@ -174,43 +175,9 @@ class _StockPageState extends State<StockPage>{
   }
 
   void onClickDeleteProduct(Product product) {
-    showAlertDialog(
-        context, product, () => _deleteProduct(product)
-    );
-  }
-
-  void showAlertDialog(BuildContext context, Product product, Function onConfirm) {
-
-    // set up the button
-    Widget okButton = FlatButton(
-      child: Text("CONFIRMAR"),
-      onPressed: () {
-        Navigator.of(context).pop();
-        onConfirm();
-      }
-    );
-
-    Widget cancelButton = FlatButton(
-      child: Text("CANCELAR"),
-      onPressed: () => Navigator.of(context).pop(),
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Excluir Item"),
-      content: Text('Deseja excluir o item "${product.description}."'),
-      actions: [
-        cancelButton,
-        okButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
+    confirmDialog( context, "Excluir Item",
+        'Deseja excluir o item "${product.description}."',
+        onConfirm: () => _deleteProduct(product)
     );
   }
 }
