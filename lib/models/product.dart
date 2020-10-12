@@ -10,6 +10,7 @@ class Product {
   double quantity;
   DateTime lastUpdate;
   double dailySpentMean;
+  double weeklySpentMean;
   DateTime endDateForecast;
 
   Product({
@@ -19,7 +20,10 @@ class Product {
     this.lastUpdate,
     this.dailySpentMean,
     this.endDateForecast
-  });
+  }) {
+    if(this.dailySpentMean != null)
+      this.weeklySpentMean = this.dailySpentMean * 7;
+  }
 
 
   factory Product.fromJson(Map<String, dynamic> json) => Product(
