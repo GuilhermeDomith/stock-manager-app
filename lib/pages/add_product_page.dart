@@ -118,11 +118,14 @@ class _AddProductPageState extends State<AddProductPage> with SingleTickerProvid
       return dialog("O gasto medio fornecido não é um valor válido.", 3);
     }
 
+    var dailySpent = weeklySpent / 7;
+    print(dailySpent);
+
     return Product(
         description: descriptionCtrl.text,
         quantity: quantity,
-        dailySpentMean: weeklySpent / 7,
-        lastUpdate: entryDateCtrl.selectedDate
+        dailySpentMean: dailySpent,
+        lastUpdate: entryDateCtrl.date
     );
   }
 

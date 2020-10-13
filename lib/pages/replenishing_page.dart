@@ -36,9 +36,9 @@ class _ReplenishingPageState extends State<ReplenishingPage> with SingleTickerPr
     _stockBloc = StockBloc();
 
     availableQuantityCtrl = TextEditingController();
-    availableOnDateCtrl = DatePickerController();
+    availableOnDateCtrl = DatePickerController(date:widget.product.lastUpdate);
     addQuantityCtrl = TextEditingController();
-    addOnDateCtrl = DatePickerController();
+    addOnDateCtrl = DatePickerController(date:widget.product.lastUpdate);
 
     _tabController = new TabController(vsync: this, length: 4);
   }
@@ -102,9 +102,9 @@ class _ReplenishingPageState extends State<ReplenishingPage> with SingleTickerPr
   saveNewProduct(BuildContext context) async {
 
     var availableQuantity = double.parse(availableQuantityCtrl.text);
-    var availableOnDate = availableOnDateCtrl.selectedDate;
+    var availableOnDate = availableOnDateCtrl.date;
     var addQuantity = double.parse(addQuantityCtrl.text);
-    var addOnDate = addOnDateCtrl.selectedDate;
+    var addOnDate = addOnDateCtrl.date;
 
     var replenishing = Replenishing(
         productId: widget.product.id,

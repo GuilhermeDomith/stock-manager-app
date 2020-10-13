@@ -11,6 +11,7 @@ class Product {
   DateTime lastUpdate;
   double dailySpentMean;
   double weeklySpentMean;
+  double daysToFinish;
   DateTime endDateForecast;
 
   Product({
@@ -19,7 +20,8 @@ class Product {
     this.quantity,
     this.lastUpdate,
     this.dailySpentMean,
-    this.endDateForecast
+    this.endDateForecast,
+    this.daysToFinish,
   }) {
     if(this.dailySpentMean != null)
       this.weeklySpentMean = this.dailySpentMean * 7;
@@ -41,6 +43,9 @@ class Product {
       endDateForecast: json['date_to_finish'] == null
         ? null
         : dtconverter.fromJson(json['date_to_finish'] as String),
+      daysToFinish: json['days_to_finish'] == null
+          ? null
+          : json['days_to_finish'].toDouble(),
   );
 
   Map<String, dynamic> toJson() => {

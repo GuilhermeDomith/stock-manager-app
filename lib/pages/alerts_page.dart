@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:stock_manager_app/blocs/product_bloc.dart';
-import 'package:stock_manager_app/components/card_product_alert.dart';
+import 'package:stock_manager_app/blocs/stock_bloc.dart';
+import 'package:stock_manager_app/components/card_product.dart';
 import 'package:stock_manager_app/components/connection.dart';
 import 'package:stock_manager_app/models/product.dart';
 import 'package:stock_manager_app/pages/home_page.dart';
@@ -21,33 +22,33 @@ class StockAlertsPage extends StatefulWidget{
 class _StockAlertsState extends State<StockAlertsPage>{
   _StockAlertsState(this.choice);
 
-  ProductBloc _productBloc;
+  StockBloc _stockBloc;
 
   final Choice choice;
   final title = "Stock Alerts";
 
   @override
   void initState() {
-    _productBloc = ProductBloc();
-    _productBloc.listProductsInAlert();
     super.initState();
+    _stockBloc = StockBloc();
+    this.refreshList();
   }
 
   @override
   void dispose() {
-    _productBloc.dispose();
     super.dispose();
+    _stockBloc.dispose();
   }
 
   Future<void> refreshList() async{
-    _productBloc.listProductsInAlert();
+    _stockBloc.listLowStock();
   }
 
   @override
   Widget build(BuildContext context) {
 
     return StreamBuilder<ProductList>(
-      stream: _productBloc.controller.stream,
+      stream: _stockBloc.controllerLowStock.stream,
       builder: ( _, AsyncSnapshot<ProductList> snapshot) {
 
         return Scaffold(

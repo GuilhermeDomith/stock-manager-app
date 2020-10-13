@@ -41,11 +41,12 @@ class CardInputText extends StatelessWidget{
 
 class DatePickerController {
 
-  DatePickerController() {
-    this.selectedDate = DateTime.now();
+  DatePickerController({this.date}) {
+    if(this.date == null)
+      this.date = DateTime.now();
   }
 
-  DateTime selectedDate;
+  DateTime date;
 
   void dispose(){ }
 
@@ -76,20 +77,20 @@ class CardInputDate extends StatelessWidget{
 
     final DateTime picked = await showDatePicker(
         context: context,
-        initialDate: controller.selectedDate,
+        initialDate: controller.date,
         firstDate: DateTime(2015, 8),
         lastDate: DateTime(2101));
 
-    if (picked != null && picked != controller.selectedDate) {
-      controller.selectedDate = picked;
-      _textFieldCtrl.text = dtFormat.format(controller.selectedDate);
+    if (picked != null && picked != controller.date) {
+      controller.date = picked;
+      _textFieldCtrl.text = dtFormat.format(controller.date);
     }
   }
 
   @override
   Widget build(BuildContext context) {
 
-    _textFieldCtrl.text = dtFormat.format(controller.selectedDate);
+    _textFieldCtrl.text = dtFormat.format(controller.date);
 
     return CardInput(
         label: this.label,

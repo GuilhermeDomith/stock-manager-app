@@ -2,8 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:stock_manager_app/blocs/product_bloc.dart';
+import 'package:stock_manager_app/blocs/stock_bloc.dart';
 import 'package:stock_manager_app/components/alerts.dart';
-import 'package:stock_manager_app/components/card_product_alert.dart';
+import 'package:stock_manager_app/components/card_product.dart';
 import 'package:stock_manager_app/components/connection.dart';
 import 'package:stock_manager_app/models/product.dart';
 import 'package:stock_manager_app/pages/home_page.dart';
@@ -28,30 +29,27 @@ class _StockPageState extends State<StockPage>{
   final Choice choice;
   final title = 'Products Stock';
 
-  ProductBloc _productBloc1;
-  ProductBloc _productBloc2;
+  StockBloc _stockBloc;
+  ProductBloc _productBloc;
 
   @override
   void initState() {
     super.initState();
-
-    _productBloc1 = ProductBloc();
-    _productBloc2 = ProductBloc();
-
-    _productBloc1.listProducts();
-    _productBloc2.listProductsInAlert();
+    _stockBloc = StockBloc();
+    _productBloc = ProductBloc();
+    this.refreshScreen();
   }
 
   @override
   void dispose() {
     super.dispose();
-    _productBloc1.dispose();
-    _productBloc2.dispose();
+    _stockBloc.dispose();
+    _productBloc.dispose();
   }
 
   Future<void> refreshScreen() async {
-    _productBloc1.listProducts();
-    _productBloc2.listProductsInAlert();
+    _stockBloc.listStock();
+    _stockBloc.listLowStock();
   }
 
   @override
@@ -85,38 +83,42 @@ class _StockPageState extends State<StockPage>{
 
   _listViewProductsAlert(BuildContext scaffoldContext) {
     return StreamBuilder(
-        stream: _productBloc1.controller.stream,
+        stream: _stockBloc.controllerLowStock.stream,
         builder: (BuildContext context, AsyncSnapshot<ProductList> snapshot) =>
 
-            Padding(
-                padding: EdgeInsets.all(8),
-                child: snapshot.hasData
-                    ? Container(
-                        height: 180,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: snapshot.data.products.length,
-                            itemBuilder: ( _, int index) =>
+            Container(
+                child: snapshot.hasData && snapshot.data.products.length > 0
+                ? Padding(
+                    padding: EdgeInsets.all(8),
+                    child: snapshot.hasData
+                        ? Container(
+                            height: 180,
+                            child: ListView.builder(
+                                scrollDirection: Axis.horizontal,
+                                itemCount: snapshot.data.products.length,
+                                itemBuilder: ( _, int index) =>
 
-                                CardProductAlert(
-                                    width: MediaQuery.of(context).size.width * 0.75,
-                                    product: snapshot.data.products[index],
-                                )
+                                    CardProductAlert(
+                                        width: MediaQuery.of(context).size.width * 0.75,
+                                        product: snapshot.data.products[index],
+                                    )
 
-                        ),
-                      )
-                    : Center(
-                        child: snapshot.connectionState == ConnectionState.waiting
-                            ? CircularProgressIndicator()
-                            : LostConnection()
-                      )
+                            ),
+                          )
+                        : Center(
+                            child: snapshot.connectionState == ConnectionState.waiting
+                                ? CircularProgressIndicator()
+                                : LostConnection()
+                          )
+                  )
+                :  null
             )
     );
   }
 
   _listViewProductsStock(BuildContext scaffoldContext) {
     return StreamBuilder<ProductList>(
-      stream: _productBloc1.controller.stream,
+      stream: _stockBloc.controllerStock.stream,
       builder: ( _, AsyncSnapshot<ProductList> snapshot) =>
 
         Expanded(
@@ -138,6 +140,9 @@ class _StockPageState extends State<StockPage>{
                               onDeleteClick: () => this.onClickDeleteProduct(
                                 snapshot.data.products[index]
                               ),
+                              onRestoreClick: () => this.onClickRestoreProduct(
+                                  snapshot.data.products[index]
+                              ),
                             ),
 
                       )
@@ -152,7 +157,7 @@ class _StockPageState extends State<StockPage>{
   }
   
   _deleteProduct(Product product) async {
-    bool success = await _productBloc1.deleteProduct(product.id);
+    bool success = await _productBloc.deleteProduct(product.id);
 
     String message;
     if(!success) {
@@ -166,11 +171,33 @@ class _StockPageState extends State<StockPage>{
         content: Text(message)));
   }
 
+  _restoreProduct(Product product) async {
+    bool success = await _stockBloc.restoreLastUpdateProduct(product.id);
+
+    String message;
+    if(!success) {
+      message = 'Erro ao restaurar o item de código ${product.id}';
+    } else {
+      refreshScreen();
+      message = 'Item de código ${product.id} foi restaurado';
+    }
+
+    Scaffold.of(this.context).showSnackBar(SnackBar(
+        content: Text(message)));
+  }
+
   void onClickEditProduct(BuildContext scaffoldContext, Product product) {
     Navigator.push(
         scaffoldContext,
         MaterialPageRoute(builder:
             (context) => ReplenishingPage(scaffoldContext, product))
+    );
+  }
+
+  void onClickRestoreProduct(Product product) {
+    confirmDialog( context, "Restaurar Estoque",
+        'Deseja restaurar a última atualização do item "${product.description}."',
+        onConfirm: () => _restoreProduct(product)
     );
   }
 

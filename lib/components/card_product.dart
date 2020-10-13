@@ -51,7 +51,9 @@ class CardProductAlert extends StatelessWidget{
 
                   LabelFeatured(
                       Icons.new_releases,
-                      DateFormat('dd/MM/yyyy').format(product.endDateForecast),
+                      NumberFormat('0').format(
+                          (product.daysToFinish < 0)? 0 : product.daysToFinish
+                      ) + ' dias',
                       Theme.of(context).primaryColorDark,
                   ),
 
@@ -78,6 +80,7 @@ class CardProduct extends StatelessWidget{
     this.width,
     this.onDeleteClick,
     this.onEditClick,
+    this.onRestoreClick,
     this.onCardTap}) : super(key: key);
 
   final Product product;
@@ -86,6 +89,7 @@ class CardProduct extends StatelessWidget{
 
   final Function onDeleteClick;
   final Function onEditClick;
+  final Function onRestoreClick;
   final Function onCardTap;
 
 
@@ -132,17 +136,17 @@ class CardProduct extends StatelessWidget{
         Padding(
           padding: EdgeInsets.only(top: 16, bottom: 16),
           child: Column(
-            children: <Widget>[
-              LabelAndValue(
-                  label: 'Quantidade:',
-                  value: NumberFormat('0').format(product.quantity) + ' Un.',
-                  light: false ),
-              LabelAndValue(
-                  label: 'Término Previsto:',
-                  value: DateFormat('dd/MM/yyyy').format(product.endDateForecast),
-                  light: false ),
-            ],
-          )
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                LabelAndValue(
+                    label: 'Quantidade:',
+                    value: NumberFormat('0').format(product.quantity) + ' Un.',
+                    light: false ),
+                LabelAndValue(
+                    label: 'Término Previsto:',
+                    value: DateFormat('dd/MM/yyyy').format(product.endDateForecast),
+                    light: false ),
+              ]),
         ),
 
         LabelAndValue(
@@ -153,10 +157,26 @@ class CardProduct extends StatelessWidget{
             label:'Gasto Semanal:',
             value: NumberFormat('0').format(product.weeklySpentMean) + ' Un.',
             light: false ),
-        LabelAndValue(
-            label:'Última atualização:',
-            value: DateFormat('dd/MM/yyyy').format(product.lastUpdate),
-            light: false ),
+
+        Row(
+            children: <Widget>[
+              Expanded(
+                  child: LabelAndValue(
+                    label:'Última atualização:',
+                    value: DateFormat('dd/MM/yyyy').format(product.lastUpdate),
+                    light: false ),
+              ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  IconButton(
+                    icon: Icon(Icons.restore),
+                    onPressed: this.onRestoreClick,
+                  ),
+                ],
+              ),
+          ]),
 
       ],
     );
