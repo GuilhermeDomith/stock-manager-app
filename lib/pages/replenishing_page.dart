@@ -122,7 +122,11 @@ class _ReplenishingPageState extends State<ReplenishingPage> with SingleTickerPr
       message = 'Não foi possível realizar a reposição.';
 
     Navigator.pop(context);
-    showSnackBar(widget.scaffoldContext, message, 10);
+    AppAlerts.showSnackBar(
+        widget.scaffoldContext,
+        message: message,
+        duration: 10
+    );
   }
 }
 

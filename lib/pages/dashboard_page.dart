@@ -34,7 +34,7 @@ class DashboardPage extends StatelessWidget{
             width: MediaQuery.of(scaffoldContext).size.width,
             child: Padding(
               padding: EdgeInsets.all(8),
-              child: CustomCleanButton(
+              child: AppCleanButton(
                 label: 'Novo Item',
                 color: Theme.of(scaffoldContext).primaryColorDark,
                 onClick: () => this.onClickAddProduct(scaffoldContext),

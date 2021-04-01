@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class CustomCleanButton extends StatelessWidget{
+class AppCleanButton extends StatelessWidget{
 
-  CustomCleanButton({this.label, this.onClick, this.color});
+  AppCleanButton({@required this.label, this.onClick, this.color});
 
   final String label;
   final Function onClick;

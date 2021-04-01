@@ -195,15 +195,19 @@ class _StockPageState extends State<StockPage>{
   }
 
   void onClickRestoreProduct(Product product) {
-    confirmDialog( context, "Restaurar Estoque",
-        'Deseja restaurar a última atualização do item "${product.description}."',
+    AppAlerts.showConfirmDialog(
+        context,
+        title: "Restaurar Estoque",
+        message: 'Deseja restaurar a última atualização do item "${product.description}."',
         onConfirm: () => _restoreProduct(product)
     );
   }
 
   void onClickDeleteProduct(Product product) {
-    confirmDialog( context, "Excluir Item",
-        'Deseja excluir o item "${product.description}."',
+    AppAlerts.showConfirmDialog(
+        context,
+        title: "Excluir Item",
+        message: 'Deseja excluir o item "${product.description}."',
         onConfirm: () => _deleteProduct(product)
     );
   }

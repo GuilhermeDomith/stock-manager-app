@@ -1,69 +1,116 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-void okDialog(BuildContext context, title, message, {Function onClose}) async {
-  Widget okButton = FlatButton(
-    child: Text("OK"),
-    onPressed: () => Navigator.of(context).pop(),
-  );
 
-  AlertDialog alert = AlertDialog(
-    title: Text(title),
-    content: Text(message),
-    actions: [
-      okButton
-    ],
-  );
+class AppAlerts {
 
-  // show the dialog
-  await showDialog(
-    context: context,
-    builder: (BuildContext context) => alert,
-  ).then((_) { if (onClose != null) onClose(); });
-}
+  AppAlerts._();
 
-void confirmDialog(
-    BuildContext context,
-    String title,
-    String message,
-    {Function onConfirm, Function onCancel}) {
+  /// Show a dialog with one button to close the alert.
+  static void showOkDialog(
+      BuildContext context,
+      {
+        String title,
+        String message,
+        Widget textOkBtn,
+        Function onClose,
+      }) async {
 
-  Widget okButton = FlatButton(
-      child: Text("CONFIRMAR"),
+    var okButton = FlatButton(
+      child: textOkBtn ?? Text("OK"),
+      onPressed: () => Navigator.of(context).pop(),
+    );
+
+    var alert = AppAlertDialog(
+      title: title,
+      content: message,
+      actions: <Widget>[
+        okButton,
+      ],
+    );
+
+    await showDialog(
+      context: context,
+      builder: (BuildContext _) => alert,
+    ).then((_) { onClose != null ?? onClose(); });
+  }
+
+  ///Show dialog with confirm and cancel buttons.
+  static void showConfirmDialog(
+      BuildContext context,
+      {
+        String title,
+        String message,
+        Widget textConfirmBtn,
+        Widget textCancelBtn,
+        Function onConfirm,
+        Function onCancel,
+      }) async {
+
+    var okButton = FlatButton(
+        child: textConfirmBtn ?? Text("CONFIRMAR"),
+        onPressed: () {
+          Navigator.of(context).pop();
+          onConfirm != null ?? onConfirm();
+        });
+
+    var cancelButton = FlatButton(
+      child: textCancelBtn ?? Text("CANCELAR"),
       onPressed: () {
         Navigator.of(context).pop();
-        if (onConfirm != null) onConfirm();
-      });
+        onCancel != null ?? onCancel();
+      },
+    );
 
-  Widget cancelButton = FlatButton(
-    child: Text("CANCELAR"),
-    onPressed: () {
-      Navigator.of(context).pop();
-      if (onCancel != null) onCancel();
-    },
-  );
+    var alert = AppAlertDialog(
+      title: title,
+      content: message,
+      actions: <Widget>[
+        cancelButton,
+        okButton,
+      ],
+    );
 
-  AlertDialog alert = AlertDialog(
-    title: Text(title),
-    content: Text(message),
-    actions: [
-      cancelButton,
-      okButton,
-    ],
-  );
+    await showDialog(
+      context: context,
+      builder: (BuildContext _) => alert,
+    ).then((_) { onCancel != null ?? onCancel(); });
+  }
 
-  showDialog(
-    context: context,
-    builder: (BuildContext context) => alert,
-  ).then((_) { if (onCancel != null) onCancel(); });
+  ///Show snack bar with duration as long specified.
+  static void showSnackBar(
+      BuildContext scaffoldContext,
+      { String message, int duration }) {
+
+    Scaffold.of(scaffoldContext)
+        .showSnackBar(
+          SnackBar(
+              content: Text(message),
+              duration: Duration(seconds: duration),
+          ),
+        );
+  }
 }
 
-showSnackBar(BuildContext scaffoldContext, String message, int duration){
-  Scaffold.of(scaffoldContext)
-      .showSnackBar(
-    SnackBar(
-      content: Text(message),
-      duration: Duration(seconds: duration),
-    ),
-  );
+/// Custom AlterDialog with application styles
+class AppAlertDialog extends StatelessWidget {
+
+  AppAlertDialog({
+    this.title,
+    this.content,
+    this.actions
+  }) : super();
+
+  final String title;
+  final String content;
+  final List<Widget> actions;
+
+  @override
+  Widget build(BuildContext context) {
+    return AlertDialog(
+      title: Text(this.title),
+      content: Text(this.content),
+      actions: this.actions,
+    );
+  }
+
 }

@@ -96,7 +96,10 @@ class _AddProductPageState extends State<AddProductPage> with SingleTickerProvid
   Product validate() {
 
     var dialog = (msg, toTab) {
-      okDialog( context, "Informação Inválida", msg,
+      AppAlerts.showOkDialog(
+          context,
+          title: "Informação Inválida",
+          message: msg,
           onClose: () => _tabController.animateTo(toTab));
       return null;
     };

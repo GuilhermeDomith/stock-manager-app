@@ -162,7 +162,7 @@ class CardInput extends StatelessWidget{
                   buttonMinWidth: width,
                   alignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    CustomCleanButton(
+                    AppCleanButton(
                       label: 'Confirmar',
                       color: Colors.blue,
                       onClick: () => this.onComplete(),
