@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:intl/intl.dart';
 import 'package:stock_manager_app/components/button.dart';
+import 'package:stock_manager_app/components/card.dart';
 import 'package:stock_manager_app/components/text.dart';
 import 'package:stock_manager_app/components/text_field.dart';
 
@@ -33,7 +34,6 @@ class CardInputText extends StatelessWidget{
         onComplete: this.onComplete,
         component: CustomTextField(
           controller: this.controller,
-          color: Colors.blue,
         )
     );
   }
@@ -98,7 +98,6 @@ class CardInputDate extends StatelessWidget{
         onComplete: this.onComplete,
         component: CustomTextField(
           controller: this._textFieldCtrl,
-          color: Colors.blue,
           onTap: () => _selectDate(context),
         )
     );
@@ -123,17 +122,10 @@ class CardInput extends StatelessWidget{
   @override
   Widget build(BuildContext context) {
 
-    var height = MediaQuery.of(context).size.height * 0.5;
     var width = MediaQuery.of(context).size.width;
 
     return  Center(
-      child: Padding(
-        padding: EdgeInsets.all(8),
-        child: Card(
-          child: Container(
-            padding: EdgeInsets.all(16),
-            width: width,
-            height: height,
+      child: AppCard(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               mainAxisAlignment: MainAxisAlignment.center,
@@ -164,7 +156,6 @@ class CardInput extends StatelessWidget{
                   children: <Widget>[
                     AppCleanButton(
                       label: 'Confirmar',
-                      color: Colors.blue,
                       onClick: () => this.onComplete(),
                     )
                   ],
@@ -173,8 +164,6 @@ class CardInput extends StatelessWidget{
               ],
             ),
           ),
-        ),
-      ),
     );
   }
 

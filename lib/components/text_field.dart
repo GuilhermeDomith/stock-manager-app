@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextField extends StatelessWidget{
@@ -11,18 +10,20 @@ class CustomTextField extends StatelessWidget{
 
   @override
   Widget build(BuildContext context) {
+    var defaultColor = Theme.of(context).primaryColorLight;
+
     return TextField(
       controller: this.controller,
       onTap: this.onTap,
       decoration: InputDecoration(
         enabledBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: this.color),
+          borderSide: BorderSide(color: this.color ?? defaultColor),
         ),
         focusedBorder: UnderlineInputBorder(
-          borderSide: BorderSide(color: this.color),
+          borderSide: BorderSide(color: this.color ?? defaultColor),
         ),
         border: UnderlineInputBorder(
-          borderSide: BorderSide(color: this.color),
+          borderSide: BorderSide(color: this.color ?? defaultColor),
         ),
       ),
       style: TextStyle(

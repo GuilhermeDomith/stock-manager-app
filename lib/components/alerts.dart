@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:toast/toast.dart';
 
 
 class AppAlerts {
@@ -17,6 +18,7 @@ class AppAlerts {
 
     var okButton = FlatButton(
       child: textOkBtn ?? Text("OK"),
+      color: Theme.of(context).primaryColor,
       onPressed: () => Navigator.of(context).pop(),
     );
 
@@ -48,6 +50,7 @@ class AppAlerts {
 
     var okButton = FlatButton(
         child: textConfirmBtn ?? Text("CONFIRMAR"),
+        textColor: Theme.of(context).primaryColorDark,
         onPressed: () {
           Navigator.of(context).pop();
           onConfirm != null ?? onConfirm();
@@ -55,6 +58,7 @@ class AppAlerts {
 
     var cancelButton = FlatButton(
       child: textCancelBtn ?? Text("CANCELAR"),
+      textColor: Theme.of(context).primaryColorDark,
       onPressed: () {
         Navigator.of(context).pop();
         onCancel != null ?? onCancel();
@@ -77,7 +81,7 @@ class AppAlerts {
   }
 
   ///Show snack bar with duration as long specified.
-  static void showSnackBar(
+  static void showSnackBar (
       BuildContext scaffoldContext,
       { String message, int duration }) {
 
@@ -85,9 +89,19 @@ class AppAlerts {
         .showSnackBar(
           SnackBar(
               content: Text(message),
-              duration: Duration(seconds: duration),
+              duration: Duration(seconds: duration ?? 10),
           ),
         );
+  }
+
+  static void showToast(
+      BuildContext context,
+      String message,
+      { duration }) {
+    Toast.show(
+        message, context,
+        duration: duration ?? 10
+    );
   }
 }
 
