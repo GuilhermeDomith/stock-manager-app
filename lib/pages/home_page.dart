@@ -22,6 +22,7 @@ class HomePage extends StatelessWidget {
     return TabBar(
       isScrollable: true,
       labelColor: Theme.of(context).primaryColorDark,
+      indicatorColor: Theme.of(context).primaryColorLight,
       unselectedLabelColor: Colors.black26,
       tabs: choices.map((Choice choice) =>
           Tab(

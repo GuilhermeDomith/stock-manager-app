@@ -56,7 +56,7 @@ class _AddProductPageState extends State<AddProductPage> with SingleTickerProvid
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
         body: TabBarView(
             controller: _tabController,
             children: [

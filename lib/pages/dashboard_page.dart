@@ -36,7 +36,6 @@ class DashboardPage extends StatelessWidget{
               padding: EdgeInsets.all(8),
               child: AppCleanButton(
                 label: 'Novo Item',
-                color: Theme.of(scaffoldContext).primaryColorDark,
                 onClick: () => this.onClickAddProduct(scaffoldContext),
               ),
             ),

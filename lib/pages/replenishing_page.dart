@@ -1,5 +1,4 @@
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:stock_manager_app/blocs/stock_bloc.dart';
@@ -60,7 +59,7 @@ class _ReplenishingPageState extends State<ReplenishingPage> with SingleTickerPr
     return DefaultTabController(
       length: 2,
       child: Scaffold(
-        backgroundColor: Colors.blue,
+        backgroundColor: Theme.of(context).primaryColor,
         body: TabBarView(
             controller: _tabController,
             children: [

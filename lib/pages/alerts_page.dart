@@ -5,6 +5,7 @@ import 'package:stock_manager_app/blocs/product_bloc.dart';
 import 'package:stock_manager_app/blocs/stock_bloc.dart';
 import 'package:stock_manager_app/components/card_product.dart';
 import 'package:stock_manager_app/components/connection.dart';
+import 'package:stock_manager_app/components/progress.dart';
 import 'package:stock_manager_app/models/product.dart';
 import 'package:stock_manager_app/pages/home_page.dart';
 
@@ -74,7 +75,7 @@ class _StockAlertsState extends State<StockAlertsPage>{
                   )
                 : Center(
                   child: snapshot.connectionState == ConnectionState.waiting
-                    ? CircularProgressIndicator()
+                    ? AppCircularProgressIndicator()
                     : LostConnection()
                 ),
           ),

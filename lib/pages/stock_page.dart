@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:stock_manager_app/blocs/product_bloc.dart';
@@ -6,6 +5,7 @@ import 'package:stock_manager_app/blocs/stock_bloc.dart';
 import 'package:stock_manager_app/components/alerts.dart';
 import 'package:stock_manager_app/components/card_product.dart';
 import 'package:stock_manager_app/components/connection.dart';
+import 'package:stock_manager_app/components/progress.dart';
 import 'package:stock_manager_app/models/product.dart';
 import 'package:stock_manager_app/pages/home_page.dart';
 import 'package:stock_manager_app/pages/replenishing_page.dart';
@@ -66,7 +66,7 @@ class _StockPageState extends State<StockPage>{
     );
   }
 
-  _body(BuildContext scaffoldContext) {
+  Widget _body(BuildContext scaffoldContext) {
     return Padding(
       padding: EdgeInsets.all(8),
       child: RefreshIndicator(
@@ -81,7 +81,7 @@ class _StockPageState extends State<StockPage>{
     );
   }
 
-  _listViewProductsAlert(BuildContext scaffoldContext) {
+  Widget _listViewProductsAlert(BuildContext scaffoldContext) {
     return StreamBuilder(
         stream: _stockBloc.controllerLowStock.stream,
         builder: (BuildContext context, AsyncSnapshot<ProductList> snapshot) =>
@@ -107,7 +107,7 @@ class _StockPageState extends State<StockPage>{
                           )
                         : Center(
                             child: snapshot.connectionState == ConnectionState.waiting
-                                ? CircularProgressIndicator()
+                                ? AppCircularProgressIndicator()
                                 : LostConnection()
                           )
                   )
@@ -116,7 +116,7 @@ class _StockPageState extends State<StockPage>{
     );
   }
 
-  _listViewProductsStock(BuildContext scaffoldContext) {
+  Widget _listViewProductsStock(BuildContext scaffoldContext) {
     return StreamBuilder<ProductList>(
       stream: _stockBloc.controllerStock.stream,
       builder: ( _, AsyncSnapshot<ProductList> snapshot) =>
@@ -149,14 +149,14 @@ class _StockPageState extends State<StockPage>{
                   )
                 : Center(
                       child: snapshot.connectionState == ConnectionState.waiting
-                          ? CircularProgressIndicator()
-                      : LostConnection()
+                        ? AppCircularProgressIndicator()
+                        : LostConnection()
                   )
           )
     );
   }
   
-  _deleteProduct(Product product) async {
+  void _deleteProduct(Product product) async {
     bool success = await _productBloc.deleteProduct(product.id);
 
     String message;
@@ -171,7 +171,7 @@ class _StockPageState extends State<StockPage>{
         content: Text(message)));
   }
 
-  _restoreProduct(Product product) async {
+  void _restoreProduct(Product product) async {
     bool success = await _stockBloc.restoreLastUpdateProduct(product.id);
 
     String message;
