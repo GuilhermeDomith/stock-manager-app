@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:stock_manager_app/pages/login_page.dart';
 
 import 'pages/home_page.dart';
 
@@ -25,8 +26,9 @@ class MyApp extends StatelessWidget {
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate
       ],
+      debugShowCheckedModeBanner: false,
       supportedLocales: [const Locale('pt', 'BR')],
-      home: HomePage(),
+      home: LoginPage()
     );
   }
 }
